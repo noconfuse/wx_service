@@ -35,8 +35,7 @@ app.all('*', function (req, res, next) {
   }
 });
 
-//公众号接入配置
-app.get('/', function (req, res) {
+const validate = function (req, res, next) {
   var signature = req.query.signature;
   var nonce = req.query.nonce
   var timestamp = req.query.timestamp;
@@ -45,9 +44,18 @@ app.get('/', function (req, res) {
   if (signature === str) {
     res.send(echostr)
   } else {
-    res.send()
+    res.send(false)
   }
-})
+}
+
+//公众号接入配置
+app.get('/', validate)
+
+//对于各种微信服务器的事件推送进行回复
+app.post('/', commonEventHandle)
+
+
+
 
 //用户登录授权
 app.post('/oauthAndLogin', function (req, res) {
@@ -119,8 +127,6 @@ app.post('/wxConfig', function (req, res) {
   })
 })
 
-//对于各种微信服务器的事件推送进行回复
-app.post('/validate', commonEventHandle)
 
 
 
